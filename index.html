@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard PPD HPM</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .map-container {
+            margin-left: 300px; 
+            height: 100vh;
+        }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 0; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .filter-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .amputation-checkboxes label {
+            font-weight: normal;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard PPD HPM - Filtros</h2>
+        
+        <div class="filter-group">
+            <label for="comuna">Filtrar por Comuna:</label>
+            <select id="comuna" multiple size="4">
+                {% for comuna in opciones_comuna %}
+                    <option value="{{ comuna }}">{{ comuna }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="sexo">Filtrar por Sexo:</label>
+            <select id="sexo" multiple size="2">
+                {% for sexo in opciones_sexo %}
+                    <option value="{{ sexo }}">{{ sexo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="grupo">Filtrar por Grupo:</label>
+            <select id="grupo" multiple size="4">
+                {% for grupo in opciones_grupo %}
+                    <option value="{{ grupo }}">{{ grupo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="total_amputaciones">Total Amputaciones (igual a):</label>
+            <input type="number" id="total_amputaciones" min="0" placeholder="Ej: 1, 2, 3...">
+        </div>
+
+        <div class="filter-group">
+            <label>Filtrar por Tipo de Amputación (Con al menos 1):</label>
+            <div class="amputation-checkboxes">
+                {% for amp in opciones_amputacion %}
+                    <label>
+                        <input type="checkbox" name="amputacion" value="{{ amp }}"> {{ amp.replace('AMP_', 'Amp. ').replace('_', ' ').replace('DESART', 'Desart.') }}
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button onclick="applyFilters()">Aplicar Filtros</button>
+        <button onclick="resetFilters()" style="margin-top: 10px; background-color: #eee;">Limpiar Filtros</button>
+    </div>
+
+    <div class="map-container" id="map-container">
+        <p style="padding: 20px;">Cargando mapa...</p>
+    </div>
+
+    <script>
+        // Función auxiliar para obtener todos los valores seleccionados de un <select multiple>
+        function getSelectValues(select) {
+            var result = [];
+            var options = select.options;
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+                if (options[i].selected) {
+                    result.push(options[i].value);
+                }
+            }
+            return result;
+        }
+
+        // Función auxiliar para obtener los valores de los checkboxes
+        function getCheckboxValues(name) {
+            var result = [];
+            var checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+            checkboxes.forEach((checkbox) => {
+                result.push(checkbox.value);
+            });
+            return result;
+        }
+
+        function applyFilters() {
+            const container = document.getElementById('map-container');
+            container.innerHTML = '<p style="padding: 20px;">Cargando mapa filtrado...</p>'; // Mostrar mensaje de carga
+
+            // 1. Recoger todos los valores de los filtros
+            const comunas = getSelectValues(document.getElementById('comuna'));
+            const sexos = getSelectValues(document.getElementById('sexo'));
+            const grupos = getSelectValues(document.getElementById('grupo'));
+            const totalAmputaciones = document.getElementById('total_amputaciones').value;
+            const amputaciones = getCheckboxValues('amputacion');
+
+            // 2. Construir la URL de la API con los parámetros
+            const params = new URLSearchParams();
+
+            comunas.forEach(c => params.append('comuna', c));
+            sexos.forEach(s => params.append('sexo', s));
+            grupos.forEach(g => params.append('grupo', g));
+            amputaciones.forEach(a => params.append('amputacion', a));
+            
+            if (totalAmputaciones) {
+                params.append('total_amputaciones', totalAmputaciones);
+            }
+            
+            const url = `/get_filtered_map?${params.toString()}`;
+
+            // 3. Llamar a la API de Flask y reemplazar el contenido del mapa
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = '<p style="color: red; padding: 20px;">Error al cargar el mapa: ' + error + '</p>';
+                });
+        }
+        
+        function resetFilters() {
+            // Limpia todos los selects múltiples
+            document.querySelectorAll('select[multiple]').forEach(select => {
+                select.selectedIndex = -1; // Deselecciona todas las opciones
+            });
+
+            // Limpia el campo de número
+            document.getElementById('total_amputaciones').value = '';
+
+            // Desmarca todos los checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            applyFilters(); // Recarga el mapa sin filtros
+        }
+
+        // Cargar el mapa inicial al cargar la página
+        window.onload = applyFilters;
+    </script>
+</body>
+</html>
