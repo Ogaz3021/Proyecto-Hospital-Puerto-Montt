@@ -74,12 +74,11 @@ El proyecto se construyó utilizando un stack de Ciencia de Datos y Desarrollo W
 ## 👥 Autores
 
 **Estudiantes:**
-* Nicolás Esteban López Roa
-* Matías Jesús Ogaz Olguín
+* **Nicolás Esteban López Roa** - [@LOPEZROA](https://github.com/LOPEZROA)
+* **Matías Jesús Ogaz Olguín** - [@Ogaz3021](https://github.com/Ogaz3021)
 
 **Profesor Guía:**
-* Juan Zamora Osorio
-
+* **Juan Zamora Osorio** - [@jfzo](https://github.com/jfzo)
 ---
 
 <div align="center">
