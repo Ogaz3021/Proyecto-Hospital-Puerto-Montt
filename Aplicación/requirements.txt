@@ -1,7 +1,0 @@
-flask
-pandas
-geopandas
-fiona
-pyproj
-shapely
-folium
