@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interactivo PPD</title>
+    
+    <style>
+        /* --- Configuración General --- */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        /* --- Mensajes Flash (Sugerencia Enviada) --- */
+        .alert {
+            padding: 15px;
+            margin: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .alert-error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .alert-warning {
+            background-color: #fcf8e3;
+            color: #8a6d3b;
+        }
+
+        /* --- Layout Principal (Sidebar + Contenido) --- */
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 380px; 
+            background-color: #ffffff;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto; 
+        }
+
+        .main-content {
+            flex: 1; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* --- Estilos del Formulario de Filtros --- */
+        #filter-form h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select { /* Incluido select para el operador de edad */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .radio-group label {
+            font-weight: normal;
+            margin-right: 15px;
+        }
+        
+        /* --- ESTILO NUEVO PARA CAJAS DE CHECKBOX --- */
+        .checkbox-container {
+            height: 120px; 
+            overflow-y: auto; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+        .checkbox-container div {
+            margin-bottom: 5px;
+        }
+        .checkbox-container label {
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        /* --- Botones --- */
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        .button {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none; /* Asegura que los enlaces se vean como botones */
+            text-align: center;
+            display: inline-block;
+        }
+        .btn-submit {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .btn-reset {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-reset:hover {
+            background-color: #5a6268;
+        }
+        /* Estilo para el botón de navegación a la arquitectura */
+        .btn-architecture {
+            background-color: #1e3962; /* Color PUCV Dark */
+            color: white;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .btn-architecture:hover {
+            background-color: #152943;
+        }
+
+
+        /* --- Contenedor del Mapa --- */
+        #map-container {
+            flex: 1; 
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden; 
+            min-height: 500px; 
+        }
+        #map-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* --- Buzón de Sugerencias --- */
+        .suggestion-box {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto 0 auto; 
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .suggestion-box h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .suggestion-box textarea {
+            width: 100%;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .suggestion-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+        }
+        .suggestion-box button:hover {
+            background-color: #218838;
+        }
+
+    </style>
+</head>
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        
+        <div class="sidebar">
+            
+            <a href="{{ url_for('mostrar_inicio_y_diagrama') }}" class="button btn-architecture">
+                Ir a Inicio
+            </a>
+            
+            <form id="filter-form">
+                <h2>Filtros</h2>
+
+                <div class="form-group">
+                    <label for="codigo_ppd">Código PPD:</label>
+                    <input type="text" id="codigo_ppd" name="codigo_ppd" placeholder="Buscar por código...">
+                </div>
+
+                <div class="form-group">
+                    <label for="comuna">Comuna:</label>
+                    <div class="checkbox-container">
+                        {% for opt in opciones_comuna %}
+                        <div>
+                            <input type="checkbox" name="comuna" value="{{ opt }}" id="comuna-{{ loop.index }}">
+                            <label for="comuna-{{ loop.index }}">{{ opt }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sexo">Sexo:</label>
+                    <div class="checkbox-container" style="height: 80px;"> {% for opt in opciones_sexo %}
+                        <div>
+                            <input type="checkbox" name="sexo" value="{{ opt }}" id="sexo-{{ loop.index }}">
+                            <label for="sexo-{{ loop.index }}">{{ opt }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="grupo">Grupo:</label>
+                    <div class="checkbox-container" style="height: 100px;"> {% for opt in opciones_grupo %}
+                        <div>
+                            <input type="checkbox" name="grupo" value="{{ opt }}" id="grupo-{{ loop.index }}">
+                            <label for="grupo-{{ loop.index }}">{{ opt }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Edad (Ultima Edad Registrada):</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        
+                        <select name="edad_operador" id="edad_operador" style="width: 100px;">
+                            <option value="">Op.</option>
+                            {% for op in opciones_edad_operadores %}
+                            <option value="{{ op }}">{{ op }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                        <input type="number" name="edad_valor" placeholder="Valor" min="0" style="flex: 1;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="total_amputaciones">Total Amputaciones (Exacto):</label>
+                    <input type="number" id="total_amputaciones" name="total_amputaciones" min="0" placeholder="Ej: 2">
+                </div>
+                
+                <div class="form-group">
+                    <label>Modo de Filtro (Amputación):</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="amputacion_modo" value="OR" checked> O (Cualquiera)
+                        </label>
+                        <label>
+                            <input type="radio" name="amputacion_modo" value="AND"> Y (Todas)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="amputacion">Tipo de Amputación:</label>
+                    <div class="checkbox-container">
+                        {% for opt in opciones_amputacion %}
+                        <div>
+                            <input type="checkbox" name="amputacion" value="{{ opt }}" id="amp-{{ loop.index }}">
+                            <label for="amp-{{ loop.index }}">{{ opt }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="button-group">
+                    <button type="submit" class="button btn-submit">Filtrar</button>
+                    <button type="reset" id="reset-button" class="button btn-reset">Limpiar</button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="main-content">
+            
+            <div id="map-container">
+                <iframe id="map-frame" src="{{ url_for('get_filtered_map') }}"></iframe>
+            </div>
+
+            <div class="suggestion-box">
+                <h3>Buzón de Sugerencias</h3>
+                <form action="{{ url_for('enviar_sugerencia') }}" method="POST">
+                    <input type="hidden" name="next_route" value="dashboard"> 
+                    <textarea 
+                        name="sugerencia_texto" 
+                        rows="4" 
+                        placeholder="Escribe tu sugerencia aquí..." 
+                        required
+                    ></textarea>
+                    <br><br>
+                    <button type="submit" class="button">Enviar Sugerencia</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterForm = document.getElementById('filter-form');
+            const mapFrame = document.getElementById('map-frame');
+            const resetButton = document.getElementById('reset-button');
+
+            // 1. Escuchar el evento 'submit' del formulario de filtros
+            filterForm.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                
+                // FormData obtiene todos los campos del formulario
+                const formData = new FormData(filterForm);
+                const params = new URLSearchParams(formData);
+                
+                // Actualizar la fuente del iframe con los parámetros de filtro
+                mapFrame.src = `{{ url_for('get_filtered_map') }}?${params.toString()}`;
+            });
+
+            // 2. Escuchar el clic en el botón 'limpiar'
+            resetButton.addEventListener('click', function() {
+                // Pequeño timeout para asegurar que el formulario se resetee antes de cargar el mapa sin filtros
+                setTimeout(() => {
+                    mapFrame.src = `{{ url_for('get_filtered_map') }}`;
+                }, 0);
+            });
+        });
+    </script>
+
+</body>
+</html>
