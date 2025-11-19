@@ -1,2 +1,10 @@
-Link para la visualización de la aplicación 
-http://158.251.6.4:8699/
+<div align="center">
+  <h2>🌐 Visualización Geoespacial</h2>
+  <p>Haz clic en el botón inferior para acceder al servidor de pruebas:</p>
+  
+  <a href="http://158.251.6.4:8699/" target="_blank">
+    <img src="https://img.shields.io/badge/ACCESS_SYSTEM-0056D2?style=for-the-badge&logo=flask&logoColor=white" height="50" alt="Ir a la Aplicación" />
+  </a>
+  
+  <p><em>Host: Servidor Institucional PUCV</em></p>
+</div>
