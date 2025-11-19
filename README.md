@@ -44,7 +44,6 @@ La herramienta de visualización geoespacial permite filtrar pacientes, visualiz
 
 </div>
 
-> **Nota:** La aplicación está alojada en el servidor institucional de la PUCV. Si el enlace no carga, asegúrate de estar conectado a la red universitaria o VPN si es requerido.
 
 ---
 
