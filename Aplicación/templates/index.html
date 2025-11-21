@@ -7,43 +7,21 @@
     
     <style>
         /* --- Configuración General --- */
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             background-color: #f0f2f5;
         }
 
-        /* --- Mensajes Flash (Sugerencia Enviada) --- */
-        .alert {
-            padding: 15px;
-            margin: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .alert-success {
-            background-color: #dff0d8;
-            color: #3c763d;
-        }
-        .alert-error {
-            background-color: #f2dede;
-            color: #a94442;
-        }
-        .alert-warning {
-            background-color: #fcf8e3;
-            color: #8a6d3b;
-        }
+        /* --- Mensajes Flash --- */
+        .alert { padding: 15px; margin: 15px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; }
+        .alert-success { background-color: #dff0d8; color: #3c763d; }
+        .alert-error { background-color: #f2dede; color: #a94442; }
+        .alert-warning { background-color: #fcf8e3; color: #8a6d3b; }
 
-        /* --- Layout Principal (Sidebar + Contenido) --- */
-        .container {
-            display: flex;
-            height: 100vh;
-        }
-
+        /* --- Layout --- */
+        .container { display: flex; height: 100vh; }
         .sidebar {
             width: 380px; 
             background-color: #ffffff;
@@ -51,154 +29,94 @@
             padding: 20px;
             overflow-y: auto; 
         }
-
         .main-content {
             flex: 1; 
             padding: 20px;
             display: flex;
             flex-direction: column;
             height: 100vh;
-        }
-
-        /* --- Estilos del Formulario de Filtros --- */
-        #filter-form h2 {
-            margin-top: 0;
-            color: #333;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-        }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: #555;
-        }
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group select { /* Incluido select para el operador de edad */
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .radio-group label {
-            font-weight: normal;
-            margin-right: 15px;
-        }
-        
-        /* --- ESTILO NUEVO PARA CAJAS DE CHECKBOX --- */
-        .checkbox-container {
-            height: 120px; 
             overflow-y: auto; 
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            background-color: #fafafa;
-        }
-        .checkbox-container div {
-            margin-bottom: 5px;
-        }
-        .checkbox-container label {
-            font-weight: normal;
-            margin-left: 5px;
         }
 
-        /* --- Botones --- */
-        .button-group {
-            display: flex;
-            gap: 10px;
+        /* --- Filtros y Botones --- */
+        #filter-form h2 { margin-top: 0; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; color: #555; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group select { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; 
         }
+        .radio-group label { font-weight: normal; margin-right: 15px; }
+        .checkbox-container {
+            height: 120px; overflow-y: auto; border: 1px solid #ccc; border-radius: 4px; padding: 10px; background-color: #fafafa;
+        }
+        .checkbox-container div { margin-bottom: 5px; }
+        .checkbox-container label { font-weight: normal; margin-left: 5px; }
+
+        .button-group { display: flex; gap: 10px; }
         .button {
-            flex: 1;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-decoration: none; /* Asegura que los enlaces se vean como botones */
-            text-align: center;
-            display: inline-block;
+            flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer;
+            transition: background-color 0.2s; text-decoration: none; text-align: center; display: inline-block;
         }
-        .btn-submit {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-submit:hover {
-            background-color: #0056b3;
-        }
-        .btn-reset {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-reset:hover {
-            background-color: #5a6268;
-        }
-        /* Estilo para el botón de navegación a la arquitectura */
-        .btn-architecture {
-            background-color: #1e3962; /* Color PUCV Dark */
-            color: white;
-            margin-bottom: 15px;
-            padding: 10px;
-        }
-        .btn-architecture:hover {
-            background-color: #152943;
-        }
+        .btn-submit { background-color: #007bff; color: white; }
+        .btn-submit:hover { background-color: #0056b3; }
+        .btn-reset { background-color: #6c757d; color: white; }
+        .btn-reset:hover { background-color: #5a6268; }
+        .btn-architecture { background-color: #1e3962; color: white; margin-bottom: 15px; padding: 10px; }
+        .btn-architecture:hover { background-color: #152943; }
 
-
-        /* --- Contenedor del Mapa --- */
+        /* --- Mapa --- */
         #map-container {
-            flex: 1; 
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden; 
-            min-height: 500px; 
+            width: 100%; height: 500px; border: 1px solid #ccc; border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; flex-shrink: 0; 
         }
-        #map-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        #map-frame { width: 100%; height: 100%; border: none; }
+        iframe:focus { outline: none; }
 
-        /* --- Buzón de Sugerencias --- */
-        .suggestion-box {
-            width: 100%;
-            max-width: 900px;
-            margin: 20px auto 0 auto; 
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* --- Botón Modal --- */
+        .btn-open-modal {
+            background-color: #28a745; color: white; padding: 15px 25px; border: none; border-radius: 50px;
+            font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background-color 0.2s; margin-top: 20px; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0;
         }
-        .suggestion-box h3 {
-            text-align: center;
-            margin-top: 0;
+        .btn-open-modal:hover { background-color: #218838; transform: scale(1.02); }
+
+        /* --- Modal --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(3px); }
+        .modal-content {
+            background-color: #fefefe; margin: 10% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 600px;
+            border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation-name: animatetop; animation-duration: 0.4s;
         }
-        .suggestion-box textarea {
-            width: 100%;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            resize: vertical;
+        @keyframes animatetop { from {top: -300px; opacity: 0} to {top: 0; opacity: 1} }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: #000; }
+        .modal-textarea { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+
+        /* --- Estilos Tabla --- */
+        .data-table-container {
+            margin-top: 30px; background-color: #fff; padding: 20px; border-radius: 8px;
+            border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 50px; 
         }
-        .suggestion-box button {
-            width: 100%;
-            padding: 12px;
-            background-color: #28a745;
-            color: white;
+        .data-table-container h3 {
+            margin-top: 0; border-bottom: 2px solid #28a745; padding-bottom: 10px; margin-bottom: 15px; color: #333;
         }
-        .suggestion-box button:hover {
-            background-color: #218838;
+        .table-responsive {
+            width: 100%; overflow-x: auto; max-height: 600px; overflow-y: auto;
         }
+        /* Estilos Pandas Table */
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th { background-color: #f2f2f2; position: sticky; top: 0; z-index: 1; padding: 10px; text-align: left; border-bottom: 2px solid #ddd; }
+        .table td { padding: 8px; border-bottom: 1px solid #eee; white-space: nowrap; }
+        
+        /* --- ESTILO MÁGICO: "Subrayado" Naranja Uniforme --- */
+        /* Usamos !important para ganar a los estilos alternados de Bootstrap */
+        tr.highlight-row > td {
+            background-color: #ff6600 !important; /* Naranja intenso como tu dibujo */
+            color: #ffffff !important; /* Letra blanca para que se lea bien */
+            border-top: 2px solid #cc5200;
+            border-bottom: 2px solid #cc5200;
+        }
+        /* Opcional: Si quieres que siga siendo amarillo claro como antes cambia #ff6600 por #fff3cd y letra negra */
 
     </style>
 </head>
@@ -217,19 +135,16 @@
     <div class="container">
         
         <div class="sidebar">
-            
-            <a href="{{ url_for('mostrar_inicio_y_diagrama') }}" class="button btn-architecture">
-                Ir a Inicio
-            </a>
+            <a href="{{ url_for('mostrar_inicio_y_diagrama') }}" class="button btn-architecture">Ir a Inicio</a>
             
             <form id="filter-form">
                 <h2>Filtros</h2>
-
+                
                 <div class="form-group">
                     <label for="codigo_ppd">Código PPD:</label>
                     <input type="text" id="codigo_ppd" name="codigo_ppd" placeholder="Buscar por código...">
                 </div>
-
+                
                 <div class="form-group">
                     <label for="comuna">Comuna:</label>
                     <div class="checkbox-container">
@@ -255,63 +170,70 @@
 
                 <div class="form-group">
                     <label for="grupo">Grupo:</label>
-                    <div class="checkbox-container" style="height: 100px;"> {% for opt in opciones_grupo %}
+                    <div class="checkbox-container" style="height: 100px;"> 
+                        {% for db_val, nombre_bonito in opciones_grupo.items() %}
                         <div>
-                            <input type="checkbox" name="grupo" value="{{ opt }}" id="grupo-{{ loop.index }}">
-                            <label for="grupo-{{ loop.index }}">{{ opt }}</label>
+                            <input type="checkbox" name="grupo" value="{{ db_val }}" id="grupo-{{ loop.index }}">
+                            <label for="grupo-{{ loop.index }}">{{ nombre_bonito }}</label>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label>Edad (Ultima Edad Registrada):</label>
+                    <label for="severidad">Última Severidad Registrada:</label>
+                    <div class="checkbox-container" style="height: 100px;"> 
+                        {% for opt in opciones_severidad %}
+                        <div>
+                            <input type="checkbox" name="severidad" value="{{ opt }}" id="severidad-{{ loop.index }}">
+                            <label for="severidad-{{ loop.index }}">{{ opt }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Edad (Última Edad Registrada):</label>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        
                         <select name="edad_operador" id="edad_operador" style="width: 100px;">
                             <option value="">Op.</option>
                             {% for op in opciones_edad_operadores %}
                             <option value="{{ op }}">{{ op }}</option>
                             {% endfor %}
                         </select>
-                        
                         <input type="number" name="edad_valor" placeholder="Valor" min="0" style="flex: 1;">
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label for="total_amputaciones">Total Amputaciones (Exacto):</label>
                     <input type="number" id="total_amputaciones" name="total_amputaciones" min="0" placeholder="Ej: 2">
                 </div>
-                
+
                 <div class="form-group">
                     <label>Modo de Filtro (Amputación):</label>
                     <div class="radio-group">
-                        <label>
-                            <input type="radio" name="amputacion_modo" value="OR" checked> O (Cualquiera)
-                        </label>
-                        <label>
-                            <input type="radio" name="amputacion_modo" value="AND"> Y (Todas)
-                        </label>
+                        <label><input type="radio" name="amputacion_modo" value="OR" checked> O (Cualquiera)</label>
+                        <label><input type="radio" name="amputacion_modo" value="AND"> Y (Todas)</label>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label for="amputacion">Tipo de Amputación:</label>
                     <div class="checkbox-container">
-                        {% for opt in opciones_amputacion %}
+                        {% for db_col, nombre_bonito in opciones_amputacion.items() %}
                         <div>
-                            <input type="checkbox" name="amputacion" value="{{ opt }}" id="amp-{{ loop.index }}">
-                            <label for="amp-{{ loop.index }}">{{ opt }}</label>
+                            <input type="checkbox" name="amputacion" value="{{ db_col }}" id="amp-{{ loop.index }}">
+                            <label for="amp-{{ loop.index }}">{{ nombre_bonito }}</label>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
 
-
                 <div class="button-group">
                     <button type="submit" class="button btn-submit">Filtrar</button>
                     <button type="reset" id="reset-button" class="button btn-reset">Limpiar</button>
                 </div>
-
             </form>
         </div>
 
@@ -321,21 +243,32 @@
                 <iframe id="map-frame" src="{{ url_for('get_filtered_map') }}"></iframe>
             </div>
 
-            <div class="suggestion-box">
-                <h3>Buzón de Sugerencias</h3>
-                <form action="{{ url_for('enviar_sugerencia') }}" method="POST">
-                    <input type="hidden" name="next_route" value="dashboard"> 
-                    <textarea 
-                        name="sugerencia_texto" 
-                        rows="4" 
-                        placeholder="Escribe tu sugerencia aquí..." 
-                        required
-                    ></textarea>
-                    <br><br>
-                    <button type="submit" class="button">Enviar Sugerencia</button>
-                </form>
+            <button id="btnAbrirModal" class="btn-open-modal">
+                📨 Dejar una Sugerencia
+            </button>
+
+            <div class="data-table-container">
+                <h3>Base de Datos Filtrada</h3>
+                <div id="tablaResultados" class="table-responsive">
+                    <p style="text-align: center; color: #666; padding: 20px;">
+                        Cargando datos...
+                    </p>
+                </div>
             </div>
             
+        </div>
+    </div>
+
+    <div id="modalSugerencia" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 style="margin-top: 0; text-align: center; color: #333;">Buzón de Sugerencias</h2>
+            <p style="text-align: center; color: #666;">Tu opinión nos ayuda a mejorar esta herramienta.</p>
+            <form action="{{ url_for('enviar_sugerencia') }}" method="POST">
+                <input type="hidden" name="next_route" value="dashboard"> 
+                <textarea name="sugerencia_texto" class="modal-textarea" rows="5" placeholder="Escribe tu sugerencia..." required></textarea>
+                <button type="submit" class="button btn-submit" style="width: 100%; background-color: #28a745;">Enviar Sugerencia</button>
+            </form>
         </div>
     </div>
 
@@ -344,26 +277,99 @@
             const filterForm = document.getElementById('filter-form');
             const mapFrame = document.getElementById('map-frame');
             const resetButton = document.getElementById('reset-button');
+            const tablaDiv = document.getElementById('tablaResultados');
 
-            // 1. Escuchar el evento 'submit' del formulario de filtros
+            function actualizarDashboard(queryString = '') {
+                mapFrame.src = `{{ url_for('get_filtered_map') }}?${queryString}`;
+                tablaDiv.innerHTML = '<p style="text-align:center; color: #007bff; padding: 20px;">🔄 Actualizando tabla de datos...</p>';
+
+                fetch(`{{ url_for('get_filtered_table') }}?${queryString}`)
+                    .then(response => response.text())
+                    .then(html => { tablaDiv.innerHTML = html; })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        tablaDiv.innerHTML = '<p style="color:red; text-align:center;">❌ Error cargando datos.</p>';
+                    });
+            }
+
+            // --- LÓGICA DE BÚSQUEDA EXACTA ---
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'marker_click') {
+                    // Convertimos a String y quitamos espacios para evitar errores de tipo
+                    const codigoBuscado = String(event.data.codigo).trim(); 
+                    console.log("Buscando en tabla:", codigoBuscado);
+                    resaltarFila(codigoBuscado);
+                }
+            });
+
+            function resaltarFila(codigo) {
+                const tabla = tablaDiv.querySelector('table');
+                if (!tabla) return;
+
+                // 1. Limpiar
+                const filasAnteriores = tabla.querySelectorAll('.highlight-row');
+                filasAnteriores.forEach(row => row.classList.remove('highlight-row'));
+
+                // 2. Encontrar índice de la columna "Codigo"
+                const headers = tabla.querySelectorAll('thead th');
+                let colIndex = -1;
+                headers.forEach((th, index) => {
+                    // Búsqueda insensible a mayúsculas/minúsculas
+                    if (th.innerText.trim().toLowerCase() === "codigo") {
+                        colIndex = index;
+                    }
+                });
+
+                // Si no se llama "Codigo", intentamos buscar "Código" o "PPD" por si acaso
+                if (colIndex === -1) {
+                    headers.forEach((th, index) => {
+                        if (th.innerText.trim().toLowerCase().includes("codigo")) colIndex = index;
+                    });
+                }
+
+                if (colIndex === -1) {
+                    console.log("No encontré la columna Codigo");
+                    return;
+                }
+
+                // 3. Buscar y resaltar
+                const filas = tabla.querySelectorAll('tbody tr');
+                
+                for (let row of filas) {
+                    const celdas = row.querySelectorAll('td');
+                    if (celdas.length > colIndex) {
+                        // Obtenemos valor de la celda y limpiamos espacios
+                        const valorCelda = celdas[colIndex].innerText.trim();
+                        
+                        // Comparación directa
+                        if (valorCelda === codigo) {
+                            row.classList.add('highlight-row');
+                            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            break; 
+                        }
+                    }
+                }
+            }
+
+            actualizarDashboard();
+
             filterForm.addEventListener('submit', function(event) {
                 event.preventDefault(); 
-                
-                // FormData obtiene todos los campos del formulario
                 const formData = new FormData(filterForm);
                 const params = new URLSearchParams(formData);
-                
-                // Actualizar la fuente del iframe con los parámetros de filtro
-                mapFrame.src = `{{ url_for('get_filtered_map') }}?${params.toString()}`;
+                actualizarDashboard(params.toString());
             });
 
-            // 2. Escuchar el clic en el botón 'limpiar'
             resetButton.addEventListener('click', function() {
-                // Pequeño timeout para asegurar que el formulario se resetee antes de cargar el mapa sin filtros
-                setTimeout(() => {
-                    mapFrame.src = `{{ url_for('get_filtered_map') }}`;
-                }, 0);
+                setTimeout(() => { actualizarDashboard(); }, 100);
             });
+
+            var modal = document.getElementById("modalSugerencia");
+            var btn = document.getElementById("btnAbrirModal");
+            var span = document.getElementsByClassName("close")[0];
+            btn.onclick = function() { modal.style.display = "block"; }
+            span.onclick = function() { modal.style.display = "none"; }
+            window.onclick = function(event) { if (event.target == modal) { modal.style.display = "none"; } }
         });
     </script>
 
